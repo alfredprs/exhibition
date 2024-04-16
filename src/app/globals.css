@@ -31,3 +31,41 @@ body {
     text-wrap: balance;
   }
 }
+
+@media (max-width: 640px) {
+  .rmc-logo {
+    margin-left: 15px;
+    margin-top: 22px;
+    width: 150px; 
+    height: auto;
+  }
+
+  .company-logo {
+    margin-right: 11px;
+    margin-top: 12px;
+    width: 100px;
+    height: auto;
+  }
+
+  .welcome {
+    margin-left: -8px;
+    margin-top: -24px;
+    font-size: 14px;
+  }
+
+  .data-update {
+    margin-left: -8px;
+    margin-top: -10px;
+    font-size: 10px;
+  }
+
+  .font-semibold {
+    font-weight: 500;
+  }
+
+  .ribbon {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+  }
+}
