@@ -334,9 +334,9 @@ export default function Home() {
             <div key={index} className="relative">
               <button
                 onClick={() => handleLocationChange({ target: { value: item.title.toLowerCase().replace(/\s/g, '_') } })}
-                className="w-full h-full text-left"
+                className={`w-full h-full text-left`}
               >
-                <div className="p-4  rounded-3xl shadow-2xl border border-gray-300">
+                <div className={`p-4 rounded-3xl shadow-2xl border border-gray-300 ${location === item.title.toLowerCase().replace(/\s/g, '_') ? 'bg-blue-200' : ''} ${location === 'pasar_koja_jakut' && item.title === 'Pasar Koja' ? 'bg-blue-200' : ''}`}>
                   <h4 className="font-bold text-lg">{item.title}</h4>
                   <p className="font-bold italic text-orange-500 text-sm md:text-lg">Weekly Weight: {item.content} Kg</p>
                   <div className="mt-4">
@@ -355,7 +355,7 @@ export default function Home() {
           <div className="px-6 pt-4 pb-2">
             <div className="font-bold text-3xl mb-2">
               <span className="text-orange-500">Data Realtime Produ</span>
-              <span className="text-blue-600">ksi Gas Methane</span>
+              <span style={{ color: "#0095C7" }}>ksi Gas Methane</span>
             </div>
             <p className="font-bold text-sm">Pengukuran Gas secara realtime menggunakan teknologi canggih</p>
             <p className="font-bold text-sm">untuk memonitor pergerakan gas, kualitas air, Suhu Cairan</p>
