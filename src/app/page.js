@@ -228,25 +228,25 @@ export default function Home() {
         <div className="md:container min-w-full sticky top-0 z-10 bg-white sticky top-0 z-20 bg-white"> {/* Make floating */}
           <div className="rmc-logo absolute ml-6 mt-6">
           <Image
-                src="/rmc logo.png"
-                alt="Logo RMC"
-                className=""
-                width={219}
-                height={80}
-                priority
-                quality={100}
-              />
+            src="/rmc logo.png"
+            alt="Logo RMC"
+            className=""
+            width={219}
+            height={80}
+            priority
+            quality={100}
+          />
           </div>
           <div className="company-logo absolute mr-6 mt-5 right-0 top-0">
           <Image
-                src="/dna logo.png"
-                alt="Logo Perusahaan"
-                className=""
-                width={100}
-                height={139}
-                priority
-                quality={100}
-              />
+            src="/dna logo.png"
+            alt="Logo Perusahaan"
+            className=""
+            width={100}
+            height={139}
+            priority
+            quality={100}
+          />
           </div>
         </div>
         <div className="md:container min-w-full relative sticky top-0 z-10 bg-white">
@@ -255,7 +255,7 @@ export default function Home() {
           </div>
           <div className="flex flex-col ml-6 mb-2">
             <h3 className="data-update font-semibold">Data Update: <ReactLiveClock format="YYYY-MM-DD HH:mm:ss" ticking timezone={'Asia/Jakarta'} suppressHydrationWarning /></h3>
-            <h3 className="data-update font-semibold">Lokasi Sekarang: {location === 'pasar_koja_jakut' ? 'Pasar Koja Jakut' : (location === 'taman_jatisari' ? 'Taman Jatisari' : 'KLHK')}</h3>
+            <h3 className="lokasi-sekarang font-semibold">Lokasi Sekarang: {location === 'pasar_koja_jakut' ? 'Pasar Koja Jakut' : (location === 'taman_jatisari' ? 'Taman Jatisari' : 'KLHK')}</h3>
           </div>
           <div className="ribbon absolute bottom-0 right-0 w-32 h-32 md:w-1/2 md:h-1/4 lg:w-1/2 lg:h-1/4 xl:w-1/2 xl:h-1/4">
             <Image
@@ -274,19 +274,19 @@ export default function Home() {
           <div className="p-4 rounded-3xl shadow-2xl border border-gray-300 flex bg-gray-200">
             <button
               onClick={() => handleLocationChange({ target: { value: 'pasar_koja_jakut' } })}
-              className={`flex-auto bg-gray-200 hover:rounded-xl hover:bg-blue-300 border  px-4 py-2  leading-tight focus:outline-none focus:shadow-outline ${location === 'pasar_koja_jakut' ? 'bg-blue-400 border-b-0 rounded-xl'  : 'border-b'}`}
+              className={`flex-auto hover:rounded-xl hover:bg-blue-300 border  px-4 py-2  leading-tight focus:outline-none focus:shadow-outline ${location === 'pasar_koja_jakut' ? 'bg-blue-400 border-b-0 rounded-xl'  : 'border-b'}`}
             >
               Pasar Koja Jakut
             </button>
             <button
               onClick={() => handleLocationChange({ target: { value: 'taman_jatisari' } })}
-              className={`flex-auto bg-gray-200 hover:rounded-xl hover:bg-blue-300 border  px-4 py-2  leading-tight focus:outline-none focus:shadow-outline ${location === 'taman_jatisari' ? 'bg-blue-400 border-b-0 rounded-xl' : 'border-b'}`}
+              className={`flex-auto hover:rounded-xl hover:bg-blue-300 border  px-4 py-2  leading-tight focus:outline-none focus:shadow-outline ${location === 'taman_jatisari' ? 'bg-blue-400 border-b-0 rounded-xl' : 'border-b'}`}
             >
               Taman Jatisari
             </button>
             <button
               onClick={() => handleLocationChange({ target: { value: 'klhk' } })}
-              className={`flex-auto bg-gray-200 hover:rounded-xl hover:bg-blue-300 border  px-4 py-2  leading-tight focus:outline-none focus:shadow-outline ${location === 'klhk' ? 'bg-blue-400 border-b-0 rounded-xl' : 'border-b'}`}
+              className={`flex-auto hover:rounded-xl hover:bg-blue-300 border  px-4 py-2  leading-tight focus:outline-none focus:shadow-outline ${location === 'klhk' ? 'bg-blue-400 border-b-0 rounded-xl' : 'border-b'}`}
             >
               KLHK
             </button>
@@ -302,7 +302,7 @@ export default function Home() {
               <p className="font-bold text-sm">Pengukuran Gas secara realtime menggunakan teknologi canggih</p>
               <p className="font-bold text-sm">untuk memonitor pergerakan gas, kualitas air, Suhu Cairan</p>
             </div>
-            <div className="px-6 py-4">
+            <div className="px-6 py-4 flex justify-center">
               <Image
                 src="/alur capture.png"
                 alt="Alur Capture"
@@ -366,6 +366,46 @@ export default function Home() {
         ))}
       </div>
       <PaginatedTable dataAll={dataAll} location={location} />
+      <footer className="py-8">
+        <div className="footer container mx-auto flex flex-wrap md:flex-no-wrap justify-between">
+          <div className="w-full md:w-auto mb-4 md:mb-0 ">
+            <h4 className="font-bold mb-2">Contact Us</h4>
+            <p>PT. Rizqi Semesta</p>
+            <p>"Phone Number" 0817362322</p>
+            <p><a href="http://www.rizqisemesta.com" className="text-blue-500">www.rizqisemesta.com</a></p>
+          </div>
+          <div className="w-full md:w-auto mb-4 md:mb-0">
+            <h4 className="font-bold mb-2">About Us</h4>
+            <ul>
+              <li><a href="#" className="text-blue-500">Home</a></li>
+              <li><a href="#" className="text-blue-500">Services</a></li>
+              <li><a href="#" className="text-blue-500">About</a></li>
+              <li><a href="#" className="text-blue-500">Pricing</a></li>
+            </ul>
+          </div>
+          <div className="w-full md:w-auto">
+            <h4 className="font-bold mb-2">About Our Company</h4>
+            <div className="text-center md:text-left">
+              <Image
+                src="/rmc logo.png"
+                alt="Logo RMC"
+                className=""
+                width={100}
+                height={80}
+                priority
+                quality={100}
+              />
+            </div>
+            <span className="inline-block max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl">
+              RMC adalah produk dari PT Rizqi Semesta yang beroperasi khusus di bidang pengolahan limbah organik.
+            </span>
+            {/* <h6>RMC adalah produk dari PT Rizqi Semesta yang beroperasi khusus di bidang pengolahan limbah organik.</h6> */}
+          </div>
+        </div>
+        <div className="container mx-auto text-center mt-8">
+          <p className="text-gray-600">Copyright © 2024 Rizqi Semesta. All Rights Reserved.</p>
+        </div>
+    </footer>
     </main>
   );
 }

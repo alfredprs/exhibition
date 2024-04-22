@@ -59,13 +59,24 @@ body {
     font-size: 10px;
   }
 
+  .lokasi-sekarang {
+    margin-left: -8px;
+    margin-top: -4px;
+    font-size: 10px;
+  }
+
   .font-semibold {
     font-weight: 500;
   }
 
   .ribbon {
     width: 45%;
-    height: 25px;
+    height: 35px;
+    margin-bottom: 10px;
+  }
+
+  .footer {
+    text-align: center;
   }
 }
 
