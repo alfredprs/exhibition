@@ -72,11 +72,14 @@ export default function Home() {
         setDataHarian(jsonData);
 
         const gasData = calculateGasHarian(jsonData);
+        const karbonEmisiToday = calculateKarbonEmisi(gasData.today.gasProd);
+        const karbonEmisiYesterday = calculateKarbonEmisi(gasData.yesterday.gasProd);
+
         const dataItems = [
           {title: "Total Gas Dihasilkan", content: `${parseFloat((gasData.today.gasProd).toFixed(3)).toString()} m<sup>3</sup>`, img: "/gas dihasilkan.png", increase: gasData.today.gasProd >= gasData.yesterday.gasProd ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasProd - gasData.yesterday.gasProd)).toFixed(3)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasProd, gasData.yesterday.gasProd) },
           {title: "Total Gas Terpakai", content:`${parseFloat((gasData.today.gasUsed).toFixed(3)).toString()} m<sup>3</sup>`, img: "/gas terpakai.png", increase: gasData.today.gasUsed >= gasData.yesterday.gasUsed ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasUsed - gasData.yesterday.gasUsed)).toFixed(3)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasUsed, gasData.yesterday.gasUsed) },
           {title: "Banyak Sampah Diproses", content: `${parseFloat((gasData.today.weight).toFixed(3)).toString()} Kg`, img: "/sampah diproses.png", increase: gasData.today.weight >= gasData.yesterday.weight ? true : false, value: `${parseFloat((Math.abs(gasData.today.weight - gasData.yesterday.weight)).toFixed(3)).toString()} Kg`, percentage: calculatePercentage(gasData.today.weight, gasData.yesterday.weight)},
-          {title: "Karbon Emisi yang Berkurang", content: "21.25 lupa", img: "/karbon emisi.png", increase: true, value: "8 lupa", percentage: "9,3"}
+          {title: "Estimasi Emisi Karbon Dioksida yang Berkurang", content: `${karbonEmisiToday} ton CO2e/tahun`, img: "/karbon emisi.png", increase: karbonEmisiToday >= karbonEmisiYesterday ? true : false, value: `${Math.abs(karbonEmisiToday - karbonEmisiYesterday)} ton CO2e/tahun`, percentage: Math.abs(calculatePercentageKE(karbonEmisiToday, karbonEmisiYesterday))}
         ];
         setDataStatistik(dataItems);
       }
@@ -137,6 +140,22 @@ export default function Home() {
       console.error('Error fetching data:', error);
     }
   };
+
+  function calculateKarbonEmisi(volume) {
+    const R = 0.082;
+    const T = 300;
+    const P = 1;
+
+    const n = (P * volume * 1000) / (R * T);
+
+    const molAkhir = n * (66.4/100);
+
+    const massaAkhir = molAkhir * 16;
+
+    const massaCO2 = (massaAkhir * 28 * 365 ) / 1000000;
+
+    return parseFloat(massaCO2).toFixed(3);
+  }
 
   function calculateGasHarian(data) {
     const options = { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -241,6 +260,17 @@ export default function Home() {
     return parseFloat(((Math.abs(after - before) / before) * 100).toFixed(3)).toString();
   }
 
+  function calculatePercentageKE(after, before) {
+    if (before === parseFloat(0).toFixed(3)) {
+        if (after === parseFloat(0).toFixed(3)) {
+            return 0;
+        } else {
+            return 100;
+        }
+    }
+    
+    return (((after - before) / before) * 100);
+  }
   useEffect(() => {
     const rotatedList = checkRotation();
     if (rotatedList) {
@@ -337,12 +367,14 @@ export default function Home() {
                 className={`w-full h-full text-left`}
               >
                 <div className={`p-4 rounded-3xl shadow-2xl border ${location === item.title.toLowerCase().replace(/\s/g, '_') ? 'bg-blue-200 border-black' : (location === 'pasar_koja_jakut' && item.title === 'Pasar Koja' ? 'bg-blue-200 border-black' : 'border-gray-300')}`}>
-                  <h4 className="font-bold text-lg">{item.title}</h4>
-                  <p className="font-bold italic text-orange-500 text-sm md:text-lg">Weekly Weight: {item.content} Kg</p>
-                  <div className="mt-4">
-                      <div className="simple-chart absolute top-6 right-6" style={{width:"40%"}}>
-                        <SimpleChart data={dataBeratDuaMinggu} type={item.title}/>
-                      </div>
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-bold text-lg">{item.title}</h4>
+                      <p className="font-bold italic text-orange-500 text-sm md:text-lg">Weekly Weight: {item.content} Kg</p>
+                    </div>
+                    <div style={{width:"40%"}}>
+                      <SimpleChart data={dataBeratDuaMinggu} type={item.title}/>
+                    </div>
                   </div>
                 </div>
               </button>
@@ -378,7 +410,7 @@ export default function Home() {
         {dataStatistik.map((item, index) => (
           <div key={index} className="relative">
             <div className="p-4  rounded-3xl shadow-2xl border border-gray-300">
-              <div className="absolute top-3 right-3">
+              <div className="absolute top-3 right-3" style={{ marginLeft: '1.5rem'}}>
                 <Image
                   src={item.img}
                   alt="Card Image"
@@ -386,9 +418,10 @@ export default function Home() {
                   height={40}
                   priority
                   quality={100}
+                  
                 />
               </div>
-              <h4 className="font-bold text-lg">{item.title}</h4>
+              <h4 className="font-bold text-lg w-4/5">{item.title}</h4>
               <p className="font-bold italic text-orange-500 text-xl" dangerouslySetInnerHTML={{ __html: item.content }}></p>
               <div className="mt-4">
                   <FontAwesomeIcon icon={faSquareArrowUpRight} className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500 rotate-180'}`} />
