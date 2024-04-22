@@ -1,9 +1,5 @@
 import { useEffect, useState } from "react";
-import { Chart, ChartDateFormatter, registerables } from "chart.js/auto";;
-import { register } from "chartjs-adapter-date-fns";
-
-// Chart.register(...registerables);
-// register();
+import { Chart} from "chart.js/auto";
 
 const LineChart = ({ data, type }) => {
   const [chartUsed, setChartUsed] = useState(null);
@@ -35,7 +31,7 @@ const LineChart = ({ data, type }) => {
             const isoDate = date.toLocaleDateString('en-CA', options);;
             accDefault[isoDate] = { gas: 0 };
         }
-        console.log(data)
+        
         const gasByDate = data.reduce((acc, cur) => {
             const date = new Date(cur.date_created).toISOString().split("T")[0];
             acc = accDefault;

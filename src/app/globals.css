@@ -78,6 +78,10 @@ body {
   .footer {
     text-align: center;
   }
+
+  .simple-chart {
+    width: 30%;
+  }
 }
 
 .sticky {

@@ -12,13 +12,13 @@ export default function handler(req, res) {
                     res.status(500).json({ error: error.message });
                     return;
                 }
-                // const adjustedResults = results.map(row => {
-                //     const dateCreated = new Date(row.date_created);
-                //     dateCreated.setHours(dateCreated.getHours() + 7);
-                //     row.date_created = dateCreated.toISOString();
-                //     return row;
-                // });
-                res.status(200).json(results);
+                const adjustedResults = results.map(row => {
+                    const dateCreated = new Date(row.date_created);
+                    dateCreated.setHours(dateCreated.getHours() + 7);
+                    row.date_created = dateCreated.toISOString();
+                    return row;
+                });
+                res.status(200).json(adjustedResults);
             }
         );
     } else {
@@ -29,13 +29,13 @@ export default function handler(req, res) {
                     res.status(500).json({ error: error.message });
                     return;
                 }
-                // const adjustedResults = results.map(row => {
-                //     const dateCreated = new Date(row.date_created);
-                //     dateCreated.setHours(dateCreated.getHours() + 7);
-                //     row.date_created = dateCreated.toISOString();
-                //     return row;
-                // });
-                res.status(200).json(results);
+                const adjustedResults = results.map(row => {
+                    const dateCreated = new Date(row.date_created);
+                    dateCreated.setHours(dateCreated.getHours() + 7);
+                    row.date_created = dateCreated.toISOString();
+                    return row;
+                });
+                res.status(200).json(adjustedResults);
             }
         );
     }
