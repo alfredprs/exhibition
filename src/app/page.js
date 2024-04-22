@@ -367,7 +367,7 @@ export default function Home() {
       </div>
       <PaginatedTable dataAll={dataAll} location={location} />
       <footer className="py-8">
-        <div className="footer container mx-auto flex flex-wrap md:flex-no-wrap justify-between">
+        <div className="footer container mx-auto flex flex-wrap md:flex-no-wrap justify-center">
           <div className="w-full md:w-auto mb-4 md:mb-0 ">
             <h4 className="font-bold mb-2">Contact Us</h4>
             <p>PT. Rizqi Semesta</p>
