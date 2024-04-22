@@ -68,3 +68,8 @@ body {
     height: 25px;
   }
 }
+
+.sticky {
+  position: sticky;
+  top: 0;
+}
