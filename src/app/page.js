@@ -336,7 +336,7 @@ export default function Home() {
                 onClick={() => handleLocationChange({ target: { value: item.title.toLowerCase().replace(/\s/g, '_') } })}
                 className={`w-full h-full text-left`}
               >
-                <div className={`p-4 rounded-3xl shadow-2xl border border-gray-300 ${location === item.title.toLowerCase().replace(/\s/g, '_') ? 'bg-blue-200' : ''} ${location === 'pasar_koja_jakut' && item.title === 'Pasar Koja' ? 'bg-blue-200' : ''}`}>
+                <div className={`p-4 rounded-3xl shadow-2xl border ${location === item.title.toLowerCase().replace(/\s/g, '_') ? 'bg-blue-200 border-black' : (location === 'pasar_koja_jakut' && item.title === 'Pasar Koja' ? 'bg-blue-200 border-black' : 'border-gray-300')}`}>
                   <h4 className="font-bold text-lg">{item.title}</h4>
                   <p className="font-bold italic text-orange-500 text-sm md:text-lg">Weekly Weight: {item.content} Kg</p>
                   <div className="mt-4">
