@@ -274,8 +274,13 @@ export default function Home() {
   }
 
   const handleLocationChange = (event) => {
-    setLocation(event.target.value);
-    window.localStorage.setItem('location', event.target.value);
+    if (event.target.value === 'pasar_koja') {
+      setLocation('pasar_koja_jakut');
+      window.localStorage.setItem('location', 'pasar_koja_jakut');
+    } else {
+      setLocation(event.target.value);
+     window.localStorage.setItem('location', event.target.value);
+    }
   };
 
   return (
