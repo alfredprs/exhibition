@@ -40,7 +40,6 @@ function checkRotation() {
 
 
 export default function Home() {
-  // const initialLocation = typeof window !== 'undefined' ? window.localStorage.getItem('location') : 'pasar_koja_jakut';
   const [rotatedDayList, setRotatedDayList] = useState([]);
   const [dataAll, setDataAll] = useState([]);
   const [dataHarian, setDataHarian] = useState([]);
@@ -51,6 +50,7 @@ export default function Home() {
   const [cardMingguan, setCardMingguan] = useState([]);
   const [dataBeratDuaMinggu, setDataBeratDuaMinggu] = useState([]);
   const [cardBerat, setCardBerat] = useState([]);
+  const [totalBerat, setTotalBerat] = useState(null);
 
   const fetchDataAll = async () => {
     try {
@@ -64,6 +64,18 @@ export default function Home() {
     }
   };
   
+  const fetchTotalBerat = async () => {
+    try {
+      if (location && location !== '') {
+        const response = await fetch(`/api/dataTotalBerat?location=${location}`);
+        const jsonData = await response.json();
+        setTotalBerat(jsonData[0]['total'])
+      }
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+  };
+
   const fetchDataHarian = async () => {
     try {
       if (location && location !== '') {
@@ -72,14 +84,13 @@ export default function Home() {
         setDataHarian(jsonData);
 
         const gasData = calculateGasHarian(jsonData);
-        const karbonEmisiToday = calculateKarbonEmisi(gasData.today.gasProd);
-        const karbonEmisiYesterday = calculateKarbonEmisi(gasData.yesterday.gasProd);
-
+        const karbonEmisiCalculate = calculateKarbonEmisi(totalBerat);
+        
         const dataItems = [
-          {title: "Total Gas Dihasilkan", content: `${parseFloat((gasData.today.gasProd).toFixed(3)).toString()} m<sup>3</sup>`, img: "/gas dihasilkan.png", increase: gasData.today.gasProd >= gasData.yesterday.gasProd ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasProd - gasData.yesterday.gasProd)).toFixed(3)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasProd, gasData.yesterday.gasProd) },
-          {title: "Total Gas Terpakai", content:`${parseFloat((gasData.today.gasUsed).toFixed(3)).toString()} m<sup>3</sup>`, img: "/gas terpakai.png", increase: gasData.today.gasUsed >= gasData.yesterday.gasUsed ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasUsed - gasData.yesterday.gasUsed)).toFixed(3)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasUsed, gasData.yesterday.gasUsed) },
-          {title: "Banyak Sampah Diproses", content: `${parseFloat((gasData.today.weight).toFixed(3)).toString()} Kg`, img: "/sampah diproses.png", increase: gasData.today.weight >= gasData.yesterday.weight ? true : false, value: `${parseFloat((Math.abs(gasData.today.weight - gasData.yesterday.weight)).toFixed(3)).toString()} Kg`, percentage: calculatePercentage(gasData.today.weight, gasData.yesterday.weight)},
-          {title: "Estimasi Emisi Karbon Dioksida yang Berkurang", content: `${karbonEmisiToday} ton CO2e/tahun`, img: "/karbon emisi.png", increase: karbonEmisiToday >= karbonEmisiYesterday ? true : false, value: `${parseFloat(Math.abs(karbonEmisiToday - karbonEmisiYesterday)).toFixed(3)} ton CO2e/tahun`, percentage: parseFloat(Math.abs(calculatePercentageKE(karbonEmisiToday, karbonEmisiYesterday))).toFixed(3) }
+          {title: "Total Gas Dihasilkan", content: `${parseFloat((gasData.today.gasProd).toFixed(2)).toString()} m<sup>3</sup>`, img: "/gas dihasilkan.png", increase: gasData.today.gasProd >= gasData.yesterday.gasProd ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasProd - gasData.yesterday.gasProd)).toFixed(2)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasProd, gasData.yesterday.gasProd) },
+          {title: "Total Gas Terpakai", content:`${parseFloat((gasData.today.gasUsed).toFixed(2)).toString()} m<sup>3</sup>`, img: "/gas terpakai.png", increase: gasData.today.gasUsed >= gasData.yesterday.gasUsed ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasUsed - gasData.yesterday.gasUsed)).toFixed(2)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasUsed, gasData.yesterday.gasUsed) },
+          {title: "Banyak Sampah Diproses", content: `${parseFloat((gasData.today.weight).toFixed(2)).toString()} Kg`, img: "/sampah diproses.png", increase: gasData.today.weight >= gasData.yesterday.weight ? true : false, value: `${parseFloat((Math.abs(gasData.today.weight - gasData.yesterday.weight)).toFixed(2)).toString()} Kg`, percentage: calculatePercentage(gasData.today.weight, gasData.yesterday.weight)},
+          {title: "Emisi Karbon Dioksida yang Berkurang", content: `${karbonEmisiCalculate} ton CO2e/tahun`, img: "/karbon emisi.png" }
         ];
         setDataStatistik(dataItems);
       }
@@ -109,8 +120,8 @@ export default function Home() {
 
         const gasData = calculateGasWeekly(jsonData);
         const dataItems = [
-          {title: "Gas Dihasilkan", content: parseFloat((gasData.thisWeek.gasProd).toFixed(3)).toString(), increase: gasData.thisWeek.gasProd >= gasData.lastWeek.gasProd ? true : false, percentage: calculatePercentage(gasData.thisWeek.gasProd, gasData.lastWeek.gasProd) },
-          {title: "Gas Terpakai", content: parseFloat((gasData.thisWeek.gasUsed).toFixed(3)).toString(), increase: gasData.thisWeek.gasUsed >= gasData.lastWeek.gasUsed ? true : false, percentage: calculatePercentage(gasData.thisWeek.gasUsed, gasData.lastWeek.gasUsed) }
+          {title: "Gas Dihasilkan", content: parseFloat((gasData.thisWeek.gasProd).toFixed(2)).toString(), increase: gasData.thisWeek.gasProd >= gasData.lastWeek.gasProd ? true : false, percentage: calculatePercentage(gasData.thisWeek.gasProd, gasData.lastWeek.gasProd) },
+          {title: "Gas Terpakai", content: parseFloat((gasData.thisWeek.gasUsed).toFixed(2)).toString(), increase: gasData.thisWeek.gasUsed >= gasData.lastWeek.gasUsed ? true : false, percentage: calculatePercentage(gasData.thisWeek.gasUsed, gasData.lastWeek.gasUsed) }
         ];
         setCardMingguan(dataItems);
       }
@@ -130,9 +141,9 @@ export default function Home() {
       const weightDataKLHK = calculateWeightWeekly(jsonData["KLHK"]);
       
       const dataItems = [
-        {title: "Pasar Koja", content: parseFloat((weightDataPasarKoja.thisWeek.weight).toFixed(3)).toString(), increase: weightDataPasarKoja.thisWeek.weight >= weightDataPasarKoja.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataPasarKoja.thisWeek.weight, weightDataPasarKoja.lastWeek.weight), value: parseFloat((Math.abs(weightDataPasarKoja.thisWeek.weight - weightDataPasarKoja.lastWeek.weight)).toFixed(3)).toString() },
-        {title: "Taman Jatisari", content: parseFloat((weightDataJatisari.thisWeek.weight).toFixed(3)).toString(), increase: weightDataJatisari.thisWeek.weight >= weightDataJatisari.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataJatisari.thisWeek.weight, weightDataJatisari.lastWeek.weight), value: parseFloat((Math.abs(weightDataJatisari.thisWeek.weight - weightDataJatisari.lastWeek.weight)).toFixed(3)).toString() },
-        {title: "KLHK", content: parseFloat((weightDataKLHK.thisWeek.weight).toFixed(3)).toString(), increase: weightDataKLHK.thisWeek.weight >= weightDataKLHK.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataKLHK.thisWeek.weight, weightDataKLHK.lastWeek.weight), value: parseFloat((Math.abs(weightDataKLHK.thisWeek.weight - weightDataKLHK.lastWeek.weight)).toFixed(3)).toString() }
+        {title: "Pasar Koja", content: parseFloat((weightDataPasarKoja.thisWeek.weight).toFixed(2)).toString(), increase: weightDataPasarKoja.thisWeek.weight >= weightDataPasarKoja.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataPasarKoja.thisWeek.weight, weightDataPasarKoja.lastWeek.weight), value: parseFloat((Math.abs(weightDataPasarKoja.thisWeek.weight - weightDataPasarKoja.lastWeek.weight)).toFixed(2)).toString() },
+        {title: "Taman Jatisari", content: parseFloat((weightDataJatisari.thisWeek.weight).toFixed(2)).toString(), increase: weightDataJatisari.thisWeek.weight >= weightDataJatisari.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataJatisari.thisWeek.weight, weightDataJatisari.lastWeek.weight), value: parseFloat((Math.abs(weightDataJatisari.thisWeek.weight - weightDataJatisari.lastWeek.weight)).toFixed(2)).toString() },
+        {title: "KLHK", content: parseFloat((weightDataKLHK.thisWeek.weight).toFixed(2)).toString(), increase: weightDataKLHK.thisWeek.weight >= weightDataKLHK.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataKLHK.thisWeek.weight, weightDataKLHK.lastWeek.weight), value: parseFloat((Math.abs(weightDataKLHK.thisWeek.weight - weightDataKLHK.lastWeek.weight)).toFixed(2)).toString() }
       ];
 
       setCardBerat(dataItems);
@@ -152,9 +163,9 @@ export default function Home() {
 
     const massaAkhir = molAkhir * 16;
 
-    const massaCO2 = (massaAkhir * 28 * 365 ) / 1000000;
+    const massaCO2 = (massaAkhir * 28 * 3 ) / 1000000;
 
-    return parseFloat(massaCO2).toFixed(3);
+    return parseFloat(massaCO2).toFixed(2);
   }
 
   function calculateGasHarian(data) {
@@ -257,20 +268,9 @@ export default function Home() {
         }
     }
     
-    return parseFloat(((Math.abs(after - before) / before) * 100).toFixed(3)).toString();
+    return parseFloat(((Math.abs(after - before) / before) * 100).toFixed(2)).toString();
   }
-
-  function calculatePercentageKE(after, before) {
-    if (before === parseFloat(0).toFixed(3)) {
-        if (after === parseFloat(0).toFixed(3)) {
-            return 0;
-        } else {
-            return 100;
-        }
-    }
-    
-    return (((after - before) / before) * 100);
-  }
+  
   useEffect(() => {
     const rotatedList = checkRotation();
     if (rotatedList) {
@@ -287,8 +287,9 @@ export default function Home() {
       setLocation('pasar_koja_jakut');
       window.localStorage.setItem('location', 'pasar_koja_jakut')
     }
+    
     fetchDataAll();
-    fetchDataHarian()
+    fetchTotalBerat()
     .catch(error => console.error('Error fetching statistics:', error));
     fetchDataSatuMinggu()
     .catch(error => console.error('Error fetching statistics:', error));
@@ -296,8 +297,17 @@ export default function Home() {
     .catch(error => console.error('Error fetching statistics:', error));
     fetchDataBeratDuaMinggu()
     .catch(error => console.error('Error fetching statistics:', error));
+    // fetchDataHarian()
+    // .catch(error => console.error('Error fetching statistics:', error));
     scrollToTop();
   }, [location])
+
+  useEffect(() => {
+    if (totalBerat !== null) {
+      fetchDataHarian()
+        .catch(error => console.error('Error fetching data:', error));
+    }
+  }, [totalBerat]);
 
   function scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -423,12 +433,14 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-lg w-4/5">{item.title}</h4>
               <p className="font-bold italic text-orange-500 text-xl" dangerouslySetInnerHTML={{ __html: item.content }}></p>
-              <div className="mt-4">
-                  <FontAwesomeIcon icon={faSquareArrowUpRight} className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500 rotate-180'}`} />
-                  <span className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500'}`}> {item.percentage}%</span>
-                  <span className="text-gray-500 text-sm"> {item.increase ? 'Meningkat sebanyak ' : 'Menurun sebanyak '}</span>
-                  <span className="text-gray-500 text-sm" dangerouslySetInnerHTML={{ __html: item.value }}></span>
-              </div>
+              {item.title !== "Emisi Karbon Dioksida yang Berkurang" &&
+                <div className="mt-4">
+                    <FontAwesomeIcon icon={faSquareArrowUpRight} className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500 rotate-180'}`} />
+                    <span className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500'}`}> {item.percentage}%</span>
+                    <span className="text-gray-500 text-sm"> {item.increase ? 'Meningkat sebanyak ' : 'Menurun sebanyak '}</span>
+                    <span className="text-gray-500 text-sm" dangerouslySetInnerHTML={{ __html: item.value }}></span>
+                </div>
+              }
             </div>
           </div>
         ))}
