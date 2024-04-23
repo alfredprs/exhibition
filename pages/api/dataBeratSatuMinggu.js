@@ -22,13 +22,13 @@ async function fetchData(connection, tableName) {
                     reject(error);
                     return;
                 }
-                const adjustedResults = results.map(row => {
-                    const dateCreated = new Date(row.date_created);
-                    dateCreated.setHours(dateCreated.getHours() + 7);
-                    row.date_created = dateCreated.toISOString();
-                    return row;
-                });
-                resolve(adjustedResults);
+                // const adjustedResults = results.map(row => {
+                //     const dateCreated = new Date(row.date_created);
+                //     dateCreated.setHours(dateCreated.getHours() + 7);
+                //     row.date_created = dateCreated.toISOString();
+                //     return row;
+                // });
+                resolve(results);
             }
         );
     });
