@@ -90,7 +90,7 @@ export default function Home() {
           {title: "Total Gas Dihasilkan", content: `${parseFloat((gasData.today.gasProd).toFixed(2)).toString()} m<sup>3</sup>`, img: "/gas dihasilkan.png", increase: gasData.today.gasProd >= gasData.yesterday.gasProd ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasProd - gasData.yesterday.gasProd)).toFixed(2)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasProd, gasData.yesterday.gasProd) },
           {title: "Total Gas Terpakai", content:`${parseFloat((gasData.today.gasUsed).toFixed(2)).toString()} m<sup>3</sup>`, img: "/gas terpakai.png", increase: gasData.today.gasUsed >= gasData.yesterday.gasUsed ? true : false, value: `${parseFloat((Math.abs(gasData.today.gasUsed - gasData.yesterday.gasUsed)).toFixed(2)).toString()} m<sup>3</sup>`, percentage: calculatePercentage(gasData.today.gasUsed, gasData.yesterday.gasUsed) },
           {title: "Banyak Sampah Diproses", content: `${parseFloat((gasData.today.weight).toFixed(2)).toString()} Kg`, img: "/sampah diproses.png", increase: gasData.today.weight >= gasData.yesterday.weight ? true : false, value: `${parseFloat((Math.abs(gasData.today.weight - gasData.yesterday.weight)).toFixed(2)).toString()} Kg`, percentage: calculatePercentage(gasData.today.weight, gasData.yesterday.weight)},
-          {title: "Emisi Karbon Dioksida yang Berkurang", content: `${karbonEmisiCalculate} ton CO2e/tahun`, img: "/karbon emisi.png" }
+          {title: "Emisi Karbon Dioksida yang Telah Diserap", content: `${karbonEmisiCalculate} ton CO2e/tahun`, img: "/karbon emisi.png" }
         ];
         setDataStatistik(dataItems);
       }
