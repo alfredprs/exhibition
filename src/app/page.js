@@ -118,10 +118,10 @@ export default function Home() {
         const jsonData = await response.json();
         setDataDuaMinggu(jsonData);
 
-        const gasData = calculateGasWeekly(jsonData);
+        const gasData = calculateGasHarian(jsonData);
         const dataItems = [
-          {title: "Gas Dihasilkan", content: parseFloat((gasData.thisWeek.gasProd).toFixed(2)).toString(), increase: gasData.thisWeek.gasProd >= gasData.lastWeek.gasProd ? true : false, percentage: calculatePercentage(gasData.thisWeek.gasProd, gasData.lastWeek.gasProd) },
-          {title: "Gas Terpakai", content: parseFloat((gasData.thisWeek.gasUsed).toFixed(2)).toString(), increase: gasData.thisWeek.gasUsed >= gasData.lastWeek.gasUsed ? true : false, percentage: calculatePercentage(gasData.thisWeek.gasUsed, gasData.lastWeek.gasUsed) }
+          {title: "Gas Dihasilkan", content: parseFloat((gasData.today.gasProd).toFixed(2)).toString(), increase: gasData.today.gasProd >= gasData.yesterday.gasProd ? true : false, percentage: calculatePercentage(gasData.today.gasProd, gasData.yesterday.gasProd) },
+          {title: "Gas Terpakai", content: parseFloat((gasData.today.gasUsed).toFixed(2)).toString(), increase: gasData.today.gasUsed >= gasData.yesterday.gasUsed ? true : false, percentage: calculatePercentage(gasData.today.gasUsed, gasData.yesterday.gasUsed) }
         ];
         setCardMingguan(dataItems);
       }
@@ -136,12 +136,10 @@ export default function Home() {
       const jsonData = await response.json();
       setDataBeratDuaMinggu(jsonData);
 
-      const weightDataPasarKoja = calculateWeightWeekly(jsonData["Pasar Koja"]);
       const weightDataJatisari= calculateWeightWeekly(jsonData["Jatisari"]);
       const weightDataKLHK = calculateWeightWeekly(jsonData["KLHK"]);
       
       const dataItems = [
-        {title: "Pasar Koja", content: parseFloat((weightDataPasarKoja.thisWeek.weight).toFixed(2)).toString(), increase: weightDataPasarKoja.thisWeek.weight >= weightDataPasarKoja.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataPasarKoja.thisWeek.weight, weightDataPasarKoja.lastWeek.weight), value: parseFloat((Math.abs(weightDataPasarKoja.thisWeek.weight - weightDataPasarKoja.lastWeek.weight)).toFixed(2)).toString() },
         {title: "Taman Jatisari", content: parseFloat((weightDataJatisari.thisWeek.weight).toFixed(2)).toString(), increase: weightDataJatisari.thisWeek.weight >= weightDataJatisari.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataJatisari.thisWeek.weight, weightDataJatisari.lastWeek.weight), value: parseFloat((Math.abs(weightDataJatisari.thisWeek.weight - weightDataJatisari.lastWeek.weight)).toFixed(2)).toString() },
         {title: "KLHK", content: parseFloat((weightDataKLHK.thisWeek.weight).toFixed(2)).toString(), increase: weightDataKLHK.thisWeek.weight >= weightDataKLHK.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataKLHK.thisWeek.weight, weightDataKLHK.lastWeek.weight), value: parseFloat((Math.abs(weightDataKLHK.thisWeek.weight - weightDataKLHK.lastWeek.weight)).toFixed(2)).toString() }
       ];
@@ -170,67 +168,72 @@ export default function Home() {
 
   function calculateGasHarian(data) {
     const options = { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' };
-
+  
     const today = new Date().toLocaleDateString('en-CA', options);
     const yesterday = new Date(Date.now() - 864e5).toLocaleDateString('en-CA', options);
+  
+    let latestTodayEntry = null;
+    let latestYesterdayEntry = null;
     
-    let gasTodayProd = 0;
-    let gasTodayUsed = 0;
-    let gasYesterdayProd = 0;
-    let gasYesterdayUsed = 0;
-    let weightToday = 0;
-    let weightYesterday = 0;
+    let earliestTodayEntry = null;
+    let earliestYesterdayEntry = null;
 
     data.forEach(item => {
       const dateCreated = item.date_created.split('T')[0];
-
+      const hourCreated = item.date_created.split('T')[1].split(':')[0];
+      
       if (dateCreated === today) {
-        gasTodayProd += Math.abs(item.gas_prod);
-        gasTodayUsed += Math.abs(item.gas_used);
-        weightToday += Math.abs(item.weight);
+        if (!latestTodayEntry || hourCreated > latestTodayEntry.date_created.split('T')[1].split(':')[0]) {
+          latestTodayEntry = item;
+        }
+        if (!earliestTodayEntry || hourCreated < earliestTodayEntry.date_created.split('T')[1].split(':')[0]) {
+          earliestTodayEntry = item;
+        }
       } else if (dateCreated === yesterday) {
-        gasYesterdayProd += Math.abs(item.gas_prod);
-        gasYesterdayUsed += Math.abs(item.gas_used);
-        weightYesterday += Math.abs(item.weight);
+        if (!latestYesterdayEntry || hourCreated > latestYesterdayEntry.date_created.split('T')[1].split(':')[0]) {
+          latestYesterdayEntry = item;
+        }
+        if (!earliestYesterdayEntry || hourCreated < earliestYesterdayEntry.date_created.split('T')[1].split(':')[0]) {
+          earliestYesterdayEntry = item;
+        }
       }
     });
-
+  
     return {
-      today: { gasProd: gasTodayProd, gasUsed: gasTodayUsed, weight:weightToday },
-      yesterday: { gasProd: gasYesterdayProd, gasUsed: gasYesterdayUsed, weight:weightYesterday }
+      today: latestTodayEntry ? { gasProd: Math.abs(latestTodayEntry.gas_prod - earliestTodayEntry.gas_prod), gasUsed: Math.abs(latestTodayEntry.gas_used - earliestTodayEntry.gas_used), weight: Math.abs(latestTodayEntry.weight - latestTodayEntry.weight) } : { gasProd: 0, gasUsed: 0, weight: 0 },
+      yesterday: latestYesterdayEntry ? { gasProd: Math.abs(latestYesterdayEntry.gas_prod - earliestYesterdayEntry.gas_prod), gasUsed: Math.abs(latestYesterdayEntry.gas_used - earliestYesterdayEntry.gas_used), weight: Math.abs(latestYesterdayEntry.weight - - earliestYesterdayEntry.weight) } : { gasProd: 0, gasUsed: 0, weight: 0 }
     };
   }
 
   function calculateGasWeekly(data) {
     const options = { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' };
-
+  
     const today = new Date().toLocaleDateString('en-CA', options);
     const sevenDaysAgo = new Date(Date.now() - 6 * 864e5).toLocaleDateString('en-CA', options);
-
-    let gasThisWeekProd = 0;
-    let gasThisWeekUsed = 0;
-    let gasLastWeekProd = 0;
-    let gasLastWeekUsed = 0;
+  
+    let earliestEntry = null;
+    let latestEntry = null;
   
     data.forEach(item => {
       const dateCreated = item.date_created.split('T')[0];
-
+      const hourCreated = item.date_created.split('T')[1].split(':')[0];
+  
       if (dateCreated >= sevenDaysAgo && dateCreated <= today) {
-        if (dateCreated >= sevenDaysAgo) {
-          gasThisWeekProd += Math.abs(item.gas_prod);
-          gasThisWeekUsed += Math.abs(item.gas_used);
-        } else {
-          gasLastWeekProd += Math.abs(item.gas_prod);
-          gasLastWeekUsed += Math.abs(item.gas_used);
+        if (!earliestEntry || dateCreated < earliestEntry.date_created.split('T')[0] || (dateCreated === earliestEntry.date_created.split('T')[0] && hourCreated < earliestEntry.date_created.split('T')[1].split(':')[0])) {
+          earliestEntry = item;
+        }
+        if (!latestEntry || dateCreated > latestEntry.date_created.split('T')[0] || (dateCreated === latestEntry.date_created.split('T')[0] && hourCreated > latestEntry.date_created.split('T')[1].split(':')[0])) {
+          latestEntry = item;
         }
       }
     });
-
+  
     return {
-      thisWeek: { gasProd: gasThisWeekProd, gasUsed: gasThisWeekUsed },
-      lastWeek: { gasProd: gasLastWeekProd, gasUsed: gasLastWeekUsed }
+      firstDay: earliestEntry ? { gasProd: Math.abs(earliestEntry.gas_prod), gasUsed: Math.abs(earliestEntry.gas_used) } : { gasProd: 0, gasUsed: 0 },
+      lastDay: latestEntry ? { gasProd: Math.abs(latestEntry.gas_prod), gasUsed: Math.abs(latestEntry.gas_used) } : { gasProd: 0, gasUsed: 0 }
     };
   }
+  
 
   function calculateWeightWeekly(data) {
     const options = { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' };
@@ -376,7 +379,7 @@ export default function Home() {
                 onClick={() => handleLocationChange({ target: { value: item.title.toLowerCase().replace(/\s/g, '_') } })}
                 className={`w-full h-full text-left`}
               >
-                <div className={`p-4 rounded-3xl shadow-2xl border ${location === item.title.toLowerCase().replace(/\s/g, '_') ? 'bg-blue-200 border-black' : (location === 'pasar_koja_jakut' && item.title === 'Pasar Koja' ? 'bg-blue-200 border-black' : 'border-gray-300')}`}>
+                <div className={`p-4 rounded-3xl shadow-2xl border ${location === item.title.toLowerCase().replace(/\s/g, '_') ? 'bg-blue-200 border-black' :  'border-gray-300' }`}>
                   <div className="flex justify-between items-center">
                     <div>
                       <h4 className="font-bold text-lg">{item.title}</h4>
@@ -433,7 +436,7 @@ export default function Home() {
               </div>
               <h4 className="font-bold text-lg w-4/5">{item.title}</h4>
               <p className="font-bold italic text-orange-500 text-xl" dangerouslySetInnerHTML={{ __html: item.content }}></p>
-              {item.title !== "Emisi Karbon Dioksida yang Berkurang" &&
+              {item.title !== "Emisi Karbon Dioksida yang Telah Diserap" &&
                 <div className="mt-4">
                     <FontAwesomeIcon icon={faSquareArrowUpRight} className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500 rotate-180'}`} />
                     <span className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500'}`}> {item.percentage}%</span>
@@ -454,13 +457,13 @@ export default function Home() {
                 <FontAwesomeIcon icon={faSquareArrowUpRight} className={`text-lg ${item.increase ? 'text-green-500' : 'text-red-500 rotate-180'}`} />
               </div>
               <div className={`absolute top-11 right-4 font-light ${item.title === "Gas Dihasilkan" ? 'text-orange-500' : 'text-blue-500' }`}>
-                <p>VS LAST WEEK</p>
+                <p>VS YESTERDAY</p>
               </div> 
               <h4 className="font-bold text-lg">{item.title}</h4>
               <p className={`font-bold ${item.title === "Gas Dihasilkan" ? 'text-orange-500' : 'text-blue-500' } text-xl`}>{item.content}</p>
               <hr className="my-4 border-b-2 border-gray-200" />
               <div className="mt-4">
-                <LineChart data={dataSatuMinggu} type={item.title}/>
+                <LineChart data={dataHarian} type={item.title}/>
               </div>
             </div>
           </div>

@@ -1,9 +1,8 @@
 import connection from "./database";
-import connectionKLHK from "./databaseKLHK";
 
 export default async function handler(req, res) {
     try {
-        const dataKLHK = await fetchData(connectionKLHK, 'data_biodigester_klhk');
+        const dataKLHK = await fetchData(connection, 'data_biodigester_klhk');
         const dataPasarKoja = await fetchData(connection, 'pasar_koja_jakut');
         const dataJatisari = await fetchData(connection, 'taman_jatisari');
 
@@ -22,13 +21,13 @@ async function fetchData(connection, tableName) {
                     reject(error);
                     return;
                 }
-                // const adjustedResults = results.map(row => {
-                //     const dateCreated = new Date(row.date_created);
-                //     dateCreated.setHours(dateCreated.getHours() + 7);
-                //     row.date_created = dateCreated.toISOString();
-                //     return row;
-                // });
-                resolve(results);
+                const adjustedResults = results.map(row => {
+                    const dateCreated = new Date(row.date_created);
+                    dateCreated.setHours(dateCreated.getHours() + 7);
+                    row.date_created = dateCreated.toISOString();
+                    return row;
+                });
+                resolve(adjustedResults);
             }
         );
     });

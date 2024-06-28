@@ -1,11 +1,10 @@
 import connection from "./database";
-import connectionKLHK from "./databaseKLHK";
 
 export default function handler(req, res) {
     const { location } = req.query;
 
     if (location === "klhk") {
-        connectionKLHK.query(
+        connection.query(
             `SELECT count(gas_prod) as total FROM data_biodigester_klhk`,
             (error, results, fields) => {
                 if (error) {
