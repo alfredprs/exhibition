@@ -7,8 +7,8 @@ const SimpleChart = ({ data, type }) => {
     useEffect(() => {
         var dataUsed = [];
 
-        if (type === 'Pasar Koja') {
-            dataUsed = data['Pasar Koja'];
+        if (type === 'Pondok Rangon') {
+            dataUsed = data['Pondok Rangon'];
         } else if (type === 'Taman Jatisari') {
             dataUsed = data['Jatisari'];
         } else {
@@ -19,8 +19,8 @@ const SimpleChart = ({ data, type }) => {
             const options = { timeZone: 'Asia/Jakarta', year: 'numeric', month: '2-digit', day: '2-digit' };
             
             var typename = ''
-            if (type === 'Pasar Koja') {
-                typename = 'Koja';
+            if (type === 'Pondok Rangon') {
+                typename = 'Rangon';
             } else if (type === 'Taman Jatisari') {
                 typename = 'Jatisari';
             } else {
@@ -64,7 +64,7 @@ const SimpleChart = ({ data, type }) => {
             const weightValues = Object.values(weightByDate).map((entry) => entry.weight);
       
             if (weightChart) {
-                if (type === "Pasar Koja") {
+                if (type === "Pondok Rangon") {
                     new Chart(weightChart, {
                         type: "line",
                         data: {
@@ -195,10 +195,10 @@ const SimpleChart = ({ data, type }) => {
         }
     }, [data, type]);
 
-    if (type === "Pasar Koja") {
+    if (type === "Pondok Rangon") {
         return (
             <>
-                <canvas id={`weightChart-Koja`} width={50} height={50} />
+                <canvas id={`weightChart-Rangon`} width={50} height={50} />
             </>
         )
     } else if (type === "Taman Jatisari") {

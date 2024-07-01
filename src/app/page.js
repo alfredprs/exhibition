@@ -138,10 +138,12 @@ export default function Home() {
 
       const weightDataJatisari= calculateWeightWeekly(jsonData["Jatisari"]);
       const weightDataKLHK = calculateWeightWeekly(jsonData["KLHK"]);
+      const weightDataPondokRangon = calculateWeightWeekly(jsonData["Pondok Rangon"]);
       
       const dataItems = [
         {title: "Taman Jatisari", content: parseFloat((weightDataJatisari.thisWeek.weight).toFixed(2)).toString(), increase: weightDataJatisari.thisWeek.weight >= weightDataJatisari.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataJatisari.thisWeek.weight, weightDataJatisari.lastWeek.weight), value: parseFloat((Math.abs(weightDataJatisari.thisWeek.weight - weightDataJatisari.lastWeek.weight)).toFixed(2)).toString() },
-        {title: "KLHK", content: parseFloat((weightDataKLHK.thisWeek.weight).toFixed(2)).toString(), increase: weightDataKLHK.thisWeek.weight >= weightDataKLHK.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataKLHK.thisWeek.weight, weightDataKLHK.lastWeek.weight), value: parseFloat((Math.abs(weightDataKLHK.thisWeek.weight - weightDataKLHK.lastWeek.weight)).toFixed(2)).toString() }
+        {title: "KLHK", content: parseFloat((weightDataKLHK.thisWeek.weight).toFixed(2)).toString(), increase: weightDataKLHK.thisWeek.weight >= weightDataKLHK.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataKLHK.thisWeek.weight, weightDataKLHK.lastWeek.weight), value: parseFloat((Math.abs(weightDataKLHK.thisWeek.weight - weightDataKLHK.lastWeek.weight)).toFixed(2)).toString() },
+        {title: "Pondok Rangon", content: parseFloat((weightDataPondokRangon.thisWeek.weight).toFixed(2)).toString(), increase: weightDataPondokRangon.thisWeek.weight >= weightDataPondokRangon.lastWeek.weight ? true : false, percentage: calculatePercentage(weightDataPondokRangon.thisWeek.weight, weightDataPondokRangon.lastWeek.weight), value: parseFloat((Math.abs(weightDataPondokRangon.thisWeek.weight - weightDataPondokRangon.lastWeek.weight)).toFixed(2)).toString() }
       ];
 
       setCardBerat(dataItems);
@@ -358,7 +360,7 @@ export default function Home() {
         </div>
         <div className="flex flex-col ml-6 mb-2">
           <h3 className="data-update font-semibold">Data Update: <ReactLiveClock format="YYYY-MM-DD HH:mm:ss" ticking timezone={'Asia/Jakarta'} suppressHydrationWarning /></h3>
-          <h3 className="lokasi-sekarang font-semibold">Lokasi Sekarang: {location === 'pasar_koja_jakut' ? 'Pasar Koja' : (location === 'taman_jatisari' ? 'Taman Jatisari' : 'KLHK')}</h3>
+          <h3 className="lokasi-sekarang font-semibold">Lokasi Sekarang: {location === 'pondok_rangon' ? 'Pondok Rangon' : (location === 'taman_jatisari' ? 'Taman Jatisari' : 'KLHK')}</h3>
         </div>
         <div className="ribbon absolute bottom-0 right-0 w-32 h-32 md:w-1/2 md:h-1/3 lg:w-1/2 lg:h-1/3 xl:w-1/2 xl:h-1/3">
           <Image

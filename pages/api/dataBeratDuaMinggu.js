@@ -3,10 +3,10 @@ import connection from "./database";
 export default async function handler(req, res) {
     try {
         const dataKLHK = await fetchData(connection, 'data_biodigester_klhk');
-        const dataPasarKoja = await fetchData(connection, 'pasar_koja_jakut');
+        const dataPondokRangon = await fetchData(connection, 'pondok_rangon');
         const dataJatisari = await fetchData(connection, 'taman_jatisari');
 
-        res.status(200).json({ "Pasar Koja": dataPasarKoja, "Jatisari": dataJatisari, "KLHK": dataKLHK });
+        res.status(200).json({ "Pondok Rangon": dataPondokRangon, "Jatisari": dataJatisari, "KLHK": dataKLHK });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

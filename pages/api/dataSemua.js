@@ -30,8 +30,13 @@ export default function handler(req, res) {
             }
             const adjustedResults = results.map(row => {
                 const dateCreated = new Date(row.date_created);
-                dateCreated.setHours(dateCreated.getHours() + 7);
-                row.date_created = dateCreated.toISOString();
+                try {
+                    dateCreated.setHours(dateCreated.getHours() + 7);
+                    row.date_created = dateCreated.toISOString();
+                } catch {
+                    
+                }
+
                 return row;
             });
             res.status(200).json(adjustedResults);
