@@ -32,7 +32,7 @@ body {
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 767.5px) {
   .rmc-logo {
     margin-left: 15px;
     margin-top: 22px;
@@ -41,7 +41,7 @@ body {
   }
 
   .company-logo {
-    margin-right: 11px;
+    margin-right: px;
     margin-top: 12px;
     width: 100px;
     height: auto;
@@ -59,13 +59,32 @@ body {
     font-size: 10px;
   }
 
+  .lokasi-sekarang {
+    margin-left: -8px;
+    margin-top: -4px;
+    font-size: 10px;
+  }
+
   .font-semibold {
     font-weight: 500;
   }
 
   .ribbon {
-    position: absolute;
-    width: 10px;
-    height: 10px;
+    width: 45%;
+    height: 35px;
+    margin-bottom: 10px;
   }
+
+  .footer {
+    text-align: center;
+  }
+
+  .simple-chart {
+    width: 30%;
+  }
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
 }
