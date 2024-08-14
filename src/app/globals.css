@@ -32,7 +32,7 @@ body {
   }
 }
 
-@media (max-width: 767.5px) {
+@media (max-width: 640px) {
   .rmc-logo {
     margin-left: 15px;
     margin-top: 22px;
@@ -41,7 +41,7 @@ body {
   }
 
   .company-logo {
-    margin-right: px;
+    margin-right: 11px;
     margin-top: 12px;
     width: 100px;
     height: auto;
@@ -64,7 +64,8 @@ body {
   }
 
   .ribbon {
-    width: 45%;
-    height: 25px;
+    position: absolute;
+    width: 10px;
+    height: 10px;
   }
 }
